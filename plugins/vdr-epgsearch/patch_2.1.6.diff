@@ -1,0 +1,11 @@
+--- src/vdr-plugin-epgsearch/uservars.h	2014-12-01 21:44:02.156258260 +0100
++++ src/vdr-plugin-epgsearch/uservars.h.orig	2014-12-01 21:44:27.038638967 +0100
+@@ -538,7 +538,7 @@
+     cVideodirVar() : cInternalVar("videodir") {}
+     string Evaluate(const cEvent*, bool escapeStrings = false)
+ 	{
+-	    return VideoDirectory;
++	    return cVideoDirectory::Name();
+ 	}
+ };
+ 

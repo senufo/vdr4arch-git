@@ -1,0 +1,54 @@
+# Maintainer: Christopher Reimer <vdr4arch[at]creimer[dot]net>
+pkgname=vdr-epgsearch
+pkgver=r334.6937a8d
+_vdrapi=2.1.6
+epoch=1
+pkgrel=1
+pkgdesc="Searchtimer and replacement of the VDR program menu"
+url="http://winni.vdr-developer.org/epgsearch"
+arch=('x86_64' 'i686')
+license=('GPL2')
+depends=('pcre' "vdr-api=${_vdrapi}")
+optdepends=('msmtp: To send notification mails (Simpler replacement for sendmail)'
+            'ssmtp: To send notification mails (Another simpler replacement for sendmail)')
+install="$pkgname.install"
+_plugname=$(echo $pkgname | sed 's/vdr-//g')
+source=("git://projects.vdr-developer.org/vdr-plugin-epgsearch.git"
+	"patch_2.1.6.diff")
+backup=('var/lib/vdr/plugins/epgsearch/epgsearchcats.conf-epgdata'
+        'var/lib/vdr/plugins/epgsearch/epgsearchcats.conf-tvm2vdr-hoerzu'
+        'var/lib/vdr/plugins/epgsearch/epgsearchcats.conf-tvm2vdr-tvmovie'
+        'var/lib/vdr/plugins/epgsearch/epgsearchconflmail.templ'
+        'var/lib/vdr/plugins/epgsearch/epgsearchmenu.conf'
+        'var/lib/vdr/plugins/epgsearch/epgsearchupdmail-html.templ'
+        'var/lib/vdr/plugins/epgsearch/epgsearchupdmail.templ')
+options=('!emptydirs')
+md5sums=('SKIP' 'SKIP')
+
+pkgver() {
+  cd "${srcdir}/vdr-plugin-${_plugname}"
+  #no tags then use number of revisions since beginning of the history
+  #cf https://wiki.archlinux.org/index.php/VCS_PKGBUILD_Guidelines#The_pkgver.28.29_function
+  printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+  #git describe --tags | sed 's/-/_/g;s/v//'
+}
+
+prepare() {
+  sed -i 's/^Menu/# Menu/g' "${srcdir}/vdr-plugin-epgsearch"/conf/epgsearchmenu.conf
+  sed -i 's/#USE_PINPLUGIN = 1/USE_PINPLUGIN = 1/g' "${srcdir}/vdr-plugin-epgsearch"/Makefile
+  sed -i 's/AUTOCONFIG=1/AUTOCONFIG=0/' "${srcdir}/vdr-plugin-epgsearch"/Makefile
+  sed -i 's/#REGEXLIB = pcre/REGEXLIB = pcre/' "${srcdir}/vdr-plugin-epgsearch"/Makefile
+  patch -p1 -i "${srcdir}/patch_2.1.6.diff"
+
+}
+
+build() {
+  cd "${srcdir}/vdr-plugin-epgsearch"
+  make
+}
+
+
+package() {
+  cd "${srcdir}/vdr-plugin-epgsearch"
+  make DESTDIR="$pkgdir" install
+}
