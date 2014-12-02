@@ -1,0 +1,11 @@
+--- src/vdr-plugin-xmltv2vdr/xmltv2vdr.cpp.orig	2014-12-02 17:19:08.440268557 +0100
++++ src/vdr-plugin-xmltv2vdr/xmltv2vdr.cpp	2014-12-02 17:20:06.240800154 +0100
+@@ -274,7 +274,7 @@
+     imgdelafter=30;
+     soundex=false;
+ 
+-    if (asprintf(&epgfile_store,"%s/epg.db",VideoDirectory)==-1) {};
++    if (asprintf(&epgfile_store,"%s/epg.db",cVideoDirectory::Name())==-1) {};
+ 
+     if (!CheckEPGDir("/var/run/vdr"))
+     {
