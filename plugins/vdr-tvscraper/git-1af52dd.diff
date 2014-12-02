@@ -1,0 +1,31 @@
+From 1af52dd83848d4f576f84dbf3871f7e670feb787 Mon Sep 17 00:00:00 2001
+From: louis
+Date: Sun, 06 Oct 2013 20:37:40 +0000
+Subject: Fixed a crash if a configured channel to scrap does not exist anymore
+
+---
+diff --git a/HISTORY b/HISTORY
+index 7ef52d0..09d9fd4 100644
+--- a/HISTORY
++++ b/HISTORY
+@@ -41,3 +41,5 @@ Version 0.0.5
+ - Fixed a crash if internet connection is not available
+ 
+ Version 0.1.0
++- Fixed a crash if a configured channel to scrap does not
++  exist anymore
+diff --git a/worker.c b/worker.c
+index c5d83f6..87203fa 100644
+--- a/worker.c
++++ b/worker.c
+@@ -131,6 +131,8 @@ void cTVScraperWorker::ScrapEPG(void) {
+     for (int i=0; i<numChannels; i++) {
+         string channelID = channels[i];
+         const cChannel *channel = Channels.GetByChannelID(tChannelID::FromString(channelID.c_str()));
++        if (!channel)
++            continue;
+         dsyslog("tvscraper: scraping Channel %s %s", channel->Name(), channelID.c_str());
+         cSchedulesLock schedulesLock;
+         const cSchedules *schedules = cSchedules::Schedules(schedulesLock);
+--
+cgit v0.9.0.2-40-g7c79
