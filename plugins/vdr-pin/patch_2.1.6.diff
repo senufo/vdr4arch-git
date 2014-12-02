@@ -1,0 +1,11 @@
+--- src/vdr-plugin-pin/pin.c	2014-12-01 21:33:02.394708219 +0100
++++ src/vdr-plugin-pin/pin.c.orig	2014-12-01 21:32:31.182888802 +0100
+@@ -574,7 +574,7 @@
+ 
+    if (isDirectory)
+       res = asprintf(&path, "%s%s%s/%s/%s", 
+-                     VideoDirectory, 
++                     cVideoDirectory::Name(), 
+                      base ? "/" : "",
+                      base ? base : "",
+                      name ? name : "",
